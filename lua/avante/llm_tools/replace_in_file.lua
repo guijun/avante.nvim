@@ -14,7 +14,7 @@ local M = setmetatable({}, Base)
 M.name = "replace_in_file"
 
 M.description =
-  "Request to replace sections of content in an existing file using SEARCH/REPLACE blocks that define exact changes to specific parts of the file. This tool should be used when you need to make targeted changes to specific parts of a file."
+"Request to replace sections of content in an existing file using SEARCH/REPLACE blocks that define exact changes to specific parts of the file. This tool should be used when you need to make targeted changes to specific parts of a file."
 
 M.support_streaming = true
 
@@ -189,6 +189,13 @@ Please make sure the diff is formatted correctly, and that the SEARCH/REPLACE bl
   session_ctx.prev_streaming_diff_timestamp_map[opts.tool_use_id] = current_timestamp
 
   local bufnr, err = Helpers.get_bufnr(abs_path)
+  if true then -- kinba
+    if err then
+      vim.cmd("edit " .. abs_path)
+      bufnr, err = Helpers.get_bufnr(abs_path)
+      if err then return false, err end
+    end
+  end
   if err then return false, err end
 
   session_ctx.undo_joined = session_ctx.undo_joined or {}
@@ -225,7 +232,7 @@ Please make sure the diff is formatted correctly, and that the SEARCH/REPLACE bl
 
   session_ctx.rough_diff_blocks_to_diff_blocks_cache_map = session_ctx.rough_diff_blocks_to_diff_blocks_cache_map or {}
   local rough_diff_blocks_to_diff_blocks_cache =
-    session_ctx.rough_diff_blocks_to_diff_blocks_cache_map[opts.tool_use_id]
+      session_ctx.rough_diff_blocks_to_diff_blocks_cache_map[opts.tool_use_id]
   if not rough_diff_blocks_to_diff_blocks_cache then
     rough_diff_blocks_to_diff_blocks_cache = {}
     session_ctx.rough_diff_blocks_to_diff_blocks_cache_map[opts.tool_use_id] = rough_diff_blocks_to_diff_blocks_cache
@@ -570,27 +577,27 @@ Please make sure the diff is formatted correctly, and that the SEARCH/REPLACE bl
       local start_line = diff_block.start_line + base_line_
       base_line_ = base_line_ + #diff_block.new_lines - #diff_block.old_lines
       local deleted_virt_lines = vim
-        .iter(diff_block.old_lines)
-        :map(function(line)
-          --- append spaces to the end of the line
-          local line_ = line .. string.rep(" ", max_col - #line)
-          return { { line_, Highlights.TO_BE_DELETED_WITHOUT_STRIKETHROUGH } }
-        end)
-        :totable()
+          .iter(diff_block.old_lines)
+          :map(function(line)
+            --- append spaces to the end of the line
+            local line_ = line .. string.rep(" ", max_col - #line)
+            return { { line_, Highlights.TO_BE_DELETED_WITHOUT_STRIKETHROUGH } }
+          end)
+          :totable()
       local end_row = start_line + #diff_block.new_lines - 1
       local delete_extmark_id =
-        vim.api.nvim_buf_set_extmark(bufnr, NAMESPACE, math.min(math.max(end_row - 1, 0), line_count - 1), 0, {
-          virt_lines = deleted_virt_lines,
-          hl_eol = true,
-          hl_mode = "combine",
-        })
+          vim.api.nvim_buf_set_extmark(bufnr, NAMESPACE, math.min(math.max(end_row - 1, 0), line_count - 1), 0, {
+            virt_lines = deleted_virt_lines,
+            hl_eol = true,
+            hl_mode = "combine",
+          })
       local incoming_extmark_id =
-        vim.api.nvim_buf_set_extmark(bufnr, NAMESPACE, math.min(math.max(start_line - 1, 0), line_count - 1), 0, {
-          hl_group = Highlights.INCOMING,
-          hl_eol = true,
-          hl_mode = "combine",
-          end_row = end_row,
-        })
+          vim.api.nvim_buf_set_extmark(bufnr, NAMESPACE, math.min(math.max(start_line - 1, 0), line_count - 1), 0, {
+            hl_group = Highlights.INCOMING,
+            hl_eol = true,
+            hl_mode = "combine",
+            end_row = end_row,
+          })
       diff_block.delete_extmark_id = delete_extmark_id
       diff_block.incoming_extmark_id = incoming_extmark_id
     end
@@ -660,13 +667,13 @@ Please make sure the diff is formatted correctly, and that the SEARCH/REPLACE bl
       end
       if #new_lines == 0 then goto continue end
       local virt_lines = vim
-        .iter(new_lines)
-        :map(function(line)
-          --- append spaces to the end of the line
-          local line_ = line .. string.rep(" ", max_col - #line)
-          return { { line_, Highlights.INCOMING } }
-        end)
-        :totable()
+          .iter(new_lines)
+          :map(function(line)
+            --- append spaces to the end of the line
+            local line_ = line .. string.rep(" ", max_col - #line)
+            return { { line_, Highlights.INCOMING } }
+          end)
+          :totable()
       local extmark_line
       if #diff_block.old_lines > 0 then
         extmark_line = math.max(0, start_line - 2 + #diff_block.old_lines)
