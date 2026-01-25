@@ -188,13 +188,13 @@ Please make sure the diff is formatted correctly, and that the SEARCH/REPLACE bl
 
   session_ctx.prev_streaming_diff_timestamp_map[opts.tool_use_id] = current_timestamp
 
-  local bufnr, err = Helpers.get_bufnr(abs_path)
-  if true then -- kinba
-    if err then
-      vim.cmd("edit " .. abs_path)
-      bufnr, err = Helpers.get_bufnr(abs_path)
-      if err then return false, err end
-    end
+  -- local bufnr, err = Helpers.get_bufnr(abs_path)
+  local ok, bufnr, err = pcall(Helpers.get_bufnr, abs_path)
+  print("Helpers.get_bufnr result", bufnr, 'abs_path', abs_path)
+  if not ok then -- kinba
+    vim.cmd("edit " .. abs_path)
+    bufnr = vim.api.nvim_get_current_buf()
+    err = nil
   end
   if err then return false, err end
 
