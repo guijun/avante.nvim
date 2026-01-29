@@ -266,8 +266,8 @@ function M.generate_prompts(opts)
     local lines = Utils.read_file_from_buf_or_disk(instruction_file_path:absolute())
     local instruction_content = lines and table.concat(lines, "\n") or ""
 
-    if instruction_content then 
-      opts.instructions = (opts.instructions or "") .. "\n" .. instruction_content 
+    if instruction_content then
+      opts.instructions = (opts.instructions or "") .. "\n" .. instruction_content
     end
     opts._instructions_loaded = true
   end
@@ -521,11 +521,13 @@ function M.curl(opts)
   local stopped = false
   ---@param stop_opts AvanteLLMStopCallbackOptions
   handler_opts.on_stop = function(stop_opts)
+    vim.schedule(function() -- kinba wrap n
     if stop_opts and not stop_opts.streaming_tool_use then
       if stopped then return end
       stopped = true
     end
     if orig_on_stop then return orig_on_stop(stop_opts) end
+    end)
   end
 
   local spec = provider:parse_curl_args(prompt_opts)
