@@ -573,6 +573,7 @@ M._defaults = {
   prompt_logger = { -- logs prompts to disk (timestamped, for replay/debugging)
     enabled = true, -- toggle logging entirely
     log_dir = vim.fn.stdpath("cache"), -- directory where logs are saved
+    log_verbose = true, -- log verbose generated prompts
     max_entries = 100, -- the uplimit of entries that can be sotred
     next_prompt = {
       normal = "<C-n>", -- load the next (newer) prompt log in normal mode

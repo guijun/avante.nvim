@@ -16,6 +16,7 @@ local LLMTools = require("avante.llm_tools")
 local History = require("avante.history")
 local HistoryRender = require("avante.history.render")
 local ACPConfirmAdapter = require("avante.ui.acp_confirm_adapter")
+local PromptLoggerVerbose = require("avante.utils.promptLoggerVerbose")
 
 ---@class avante.LLM
 local M = {}
@@ -464,13 +465,17 @@ function M.generate_prompts(opts)
   if cursor_rules then system_prompt = system_prompt .. "\n\n" .. cursor_rules end
 
   ---@type AvantePromptOptions
-  return {
+  local r = {
     system_prompt = system_prompt,
     messages = messages,
     image_paths = image_paths,
     tools = tools,
     pending_compaction_history_messages = pending_compaction_history_messages,
   }
+  if Config.prompt_logger.log_verbose and Config.prompt_logger.enabled then
+    PromptLoggerVerbose.log_prompt(vim.inspect(r));
+  end
+  return r
 end
 
 ---@param opts AvanteGeneratePromptsOptions

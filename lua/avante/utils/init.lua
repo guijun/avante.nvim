@@ -13,6 +13,7 @@ local diff2search_replace = require("avante.utils.diff2search_replace")
 ---@field environment avante.utils.environment
 ---@field lsp avante.utils.lsp
 ---@field logger avante.utils.promptLogger
+---@field loggerVerbose avante.utils.promptLoggerVerbose
 local M = {}
 
 setmetatable(M, {
