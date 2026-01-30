@@ -1328,7 +1328,8 @@ function M.process_tool_use(tools, tool_use, opts)
     end
 
     if err ~= nil then
-      if on_log then on_log(tool_use.id, tool_use.name, "Error: " .. err, "failed") end
+      if on_log then on_log(tool_use.id, tool_use.name, "Error: " .. tostring(err), "failed") end -- kinba 这个 err 可能是个userdata
+      -- if on_log then on_log(tool_use.id, tool_use.name, "Error: " .. err, "failed") end -- kinba 这个 err 可能是个userdata
     else
       if on_log then on_log(tool_use.id, tool_use.name, "tool finished", "succeeded") end
     end
