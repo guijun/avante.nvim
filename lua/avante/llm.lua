@@ -526,13 +526,15 @@ function M.curl(opts)
   local stopped = false
   ---@param stop_opts AvanteLLMStopCallbackOptions
   handler_opts.on_stop = function(stop_opts)
-    vim.schedule(function() -- kinba wrap n
     if stop_opts and not stop_opts.streaming_tool_use then
       if stopped then return end
       stopped = true
     end
-    if orig_on_stop then return orig_on_stop(stop_opts) end
-    end)
+    if orig_on_stop then return
+      vim.schedule(function() -- kinba wrap n
+        orig_on_stop(stop_opts)
+      end)
+    end
   end
 
   local spec = provider:parse_curl_args(prompt_opts)

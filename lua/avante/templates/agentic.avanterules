@@ -2,7 +2,7 @@
 
 {% block extra_prompt %}
 
-{% if 'gpt-4.1' in model_name %}
+{% if 'gpt-4' in model_name or 'gpt-5' in model_name %}
 {%- include "_gpt4-1-agentic.avanterules" %}
 
 ====
