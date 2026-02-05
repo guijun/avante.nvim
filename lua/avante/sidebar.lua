@@ -3472,6 +3472,7 @@ function Sidebar:create_todos_container()
     local line = string.format("%s %d. %s", status_content, idx, todo.content)
     if todo.status == "cancelled" then line = "~~" .. line .. "~~" end
     if todo.status ~= "todo" then focused_idx = idx + 1 end
+    line = line:gsub("\n"," ") -- kinba
     table.insert(todos_content_lines, line)
   end
   if focused_idx > #todos_content_lines then focused_idx = #todos_content_lines end
